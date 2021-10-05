@@ -80,3 +80,49 @@ weather_df %>%
   geom_smooth(se = FALSE) +
   facet_grid(. ~ name)
 ```
+
+Making one more scatter plot
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y=tmax, size = prcp)) +
+  geom_point(alpha = .3) +
+  facet_grid(. ~ name) +
+  geom_smooth(se = FALSE)
+```
+
+okay, but what is `se = FALSE`???
+se makes standard error bars for a confidence interval! But ehhh not great
+
+
+## Use data manipulation as part of this
+
+```{r}
+weather_df %>% 
+  filter(name == "CentralPark_NY") %>% 
+  mutate(
+    tmax = tmax * (9/5) + 32,
+    tmin = tmin * (9/5) + 32
+  ) %>% 
+  ggplot(aes(x = tmin, y = tmax)) + 
+  geom_point()
+```
+
+
+## Stacking geoms
+
+Which geoms do you want?
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = date, y = tmax, color = name)) +
+  geom_smooth()
+```
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_hex()
+```
+
+
