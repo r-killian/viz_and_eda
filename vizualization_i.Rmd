@@ -1,5 +1,5 @@
 ---
-title: "Visualization 1"
+title: "Visualization 1: ggplot 1"
 output: github_document
 ---
 
@@ -8,3 +8,75 @@ library(tidyverse)
 library(ggridges)
 ```
 
+Load in a data set that we will use often (copied from p8105 website).
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728", "USC00519397", "USS0023B17S"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(
+      id, 
+      USW00094728 = "CentralPark_NY", 
+      USC00519397 = "Waikiki_HA",
+      USS0023B17S = "Waterhole_WA"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+## Scatterplot
+
+tmax vs tmin
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+```
+
+
+you can save ggplots
+
+```{r}
+ggp_tmax_tmin = 
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax)) +
+  geom_point()
+
+
+ggp_tmax_tmin
+```
+
+## Make it **Fancy**
+
+Add color, lines, other things
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3) + 
+  geom_smooth(se = FALSE)
+```
+
+changing aesthetic location (color = name)
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax,)) +
+  geom_point(aes(color = name), alpha = .3) + 
+  geom_smooth(se = FALSE)
+```
+
+move it back to global position, add facet grid
+
+```{r}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3) + 
+  geom_smooth(se = FALSE) +
+  facet_grid(. ~ name)
+```
