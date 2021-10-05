@@ -304,3 +304,7 @@ or set global options, honestly
 `knitr::opts_chunk$set( fig.width = 6,   fig.asp = .6,   out.width = "90%" )`
 
 Place that code in the library code chunk at the start of the document
+
+## Takeaway
+
+data &gt; aesthetics &gt; geometry

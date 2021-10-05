@@ -193,3 +193,7 @@ fig.width = 6,
 )`
 
 Place that code in the library code chunk at the start of the document
+
+## Takeaway
+
+data > aesthetics > geometry
