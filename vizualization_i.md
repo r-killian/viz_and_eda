@@ -286,3 +286,21 @@ weather_df %>%
     ## Warning: Removed 3 rows containing non-finite values (stat_density_ridges).
 
 ![](vizualization_i_files/figure-gfm/unnamed-chunk-17-1.png)<!-- -->
+
+## Embedding PLots
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](vizualization_i_files/figure-gfm/unnamed-chunk-18-1.png)<!-- -->
+
+or set global options, honestly
+
+`knitr::opts_chunk$set( fig.width = 6,   fig.asp = .6,   out.width = "90%" )`
+
+Place that code in the library code chunk at the start of the document

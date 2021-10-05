@@ -176,3 +176,20 @@ weather_df %>%
   geom_density_ridges(alpha = .8, scale = .8)
 ```
 
+## Embedding PLots
+
+```{r, fig.width = 12}
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = .3)
+```
+
+or set global options, honestly
+
+`knitr::opts_chunk$set(
+fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)`
+
+Place that code in the library code chunk at the start of the document
