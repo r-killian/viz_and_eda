@@ -1,10 +1,11 @@
-Visualization 2
+Visualization 2: ggplot 2
 ================
 
 ``` r
 library(tidyverse)
 library(ggridges)
 library(patchwork)
+library(viridis)
 ```
 
 Load in a data set that we will use often (copied from p8105 website).
@@ -48,3 +49,139 @@ weather_df =
     ## date created (size, mb): 2021-10-05 10:30:03 (0.913)
 
     ## file min/max dates: 1999-09-01 / 2021-09-30
+
+## Starting with a familiar one
+
+``` r
+weather_df %>%  
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature at three sations",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from the rnoaa package"
+  )
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](vizualization_ii_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+
+## Scales
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature at three sations",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from the rnoaa package") +
+  scale_x_continuous(
+    breaks = c(-15, 0, 15),
+    labels = c("-15 C", "0", "15") +
+  scale_y_continuous(
+    trans = "sqrt", 
+    position = "right"
+  ))
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](vizualization_ii_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+Hues
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature at three sations",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from the rnoaa package"
+  ) +
+  scale_color_hue(
+    name = "Location",
+    h = c(100, 300)
+  ) +
+  scale_color_viridis_d()
+```
+
+    ## Scale for 'colour' is already present. Adding another scale for 'colour',
+    ## which will replace the existing scale.
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](vizualization_ii_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+## Themes
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature at three sations",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from the rnoaa package with three stations"
+  ) +
+  scale_color_viridis_d() +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](vizualization_ii_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+
+for themes, order MATTERS. For `theme_bw()` it applies ALL defaults for
+the black and white theme, which means it would overwrite any themes
+listed before it. This is why we put the
+`theme(legend.position = "bottom")` command after the `theme_bw()`
+
+``` r
+weather_df %>% 
+  ggplot(aes(x = tmin, y = tmax, color = name)) +
+  geom_point(alpha = 0.3) +
+  labs(
+    title = "Temperature at three sations",
+    x = "Minimum daily temperature (C)",
+    y = "Maximum daily temperature (C)",
+    caption = "Data from the rnoaa package with three stations"
+  ) +
+  scale_color_viridis_d() +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+```
+
+    ## Warning: Removed 15 rows containing missing values (geom_point).
+
+![](vizualization_ii_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+
+It is possible to set you themes as a global setting! Put the following
+code chunk at the **START** of an RMD
+
+``` r
+library(tidyverse)
+
+knitr::opts_chunk$set(
+  fig.width = 6,
+  fig.asp = .6,
+  out.width = "90%"
+)
+
+theme_set(theme_minimal() + theme(legend.position = "bottom"))
+
+options(
+  ggplot2.continuous.colour = "viridis",
+  ggplot2.continuous.fill = "viridis"
+)
+
+scale_colour_discrete = scale_colour_viridis_d
+scale_fill_discrete = scale_fill_viridis_d
+```
