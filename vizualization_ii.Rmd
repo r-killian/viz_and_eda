@@ -236,4 +236,11 @@ pulse_df =
 pulse_df %>% 
   ggplot(aes(x = visit, y = bdi)) +
   geom_boxplot()
+
+pulse_df %>% 
+  ggplot(aes(x = visit, y = bdi)) +
+  geom_boxplot() +
+  geom_line(aes(group = id))
 ```
+
+Look at the course website for the last example!

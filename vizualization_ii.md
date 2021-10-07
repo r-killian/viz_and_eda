@@ -314,3 +314,18 @@ pulse_df %>%
     ## Warning: Removed 879 rows containing non-finite values (stat_boxplot).
 
 <img src="vizualization_ii_files/figure-gfm/unnamed-chunk-13-1.png" width="90%" />
+
+``` r
+pulse_df %>% 
+  ggplot(aes(x = visit, y = bdi)) +
+  geom_boxplot() +
+  geom_line(aes(group = id))
+```
+
+    ## Warning: Removed 879 rows containing non-finite values (stat_boxplot).
+
+    ## Warning: Removed 515 row(s) containing missing values (geom_path).
+
+<img src="vizualization_ii_files/figure-gfm/unnamed-chunk-13-2.png" width="90%" />
+
+Look at the course website for the last example!
