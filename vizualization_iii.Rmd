@@ -31,4 +31,166 @@ weather_df =
   select(name, id, everything())
 ```
 
+## `group_by`
+
+```{r}
+weather_df %>%
+  group_by(name, month)
+```
+
+
+## counting things
+
+```{r}
+weather_df %>% 
+  group_by(month) %>% 
+  summarize(n_obs = n())
+
+weather_df %>% 
+  count(name)
+```
+
+its nice that summarize produces a data frame. 
+
+```{r}
+weather_df %>% 
+  pull(name) %>% 
+  table()
+```
+
+Using `table` does NOT give us a data frame, If we try to use this in ggplot it breaks. 
+
+```{r}
+weather_df %>% 
+  janitor::tabyl(month, name)
+```
+
+this is maybe useful if we need to make a table for someone else to read. 
+
+
+
+
+## MOre general summaries
+
+Let's count, take means, looks at SDs
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  summarize(
+    n_obs = n(),
+    mean_tmax = mean(tmax, na.rm = T),
+    median_tmax = median(tmax, na.rm = T),
+    sd_tmax = sd(tmax, na.rm = T)
+  )
+```
+
+adding additional groups and graphing
+
+```{r}
+weather_df %>% 
+  group_by(name, month) %>% 
+  summarize(
+    n_obs = n(),
+    mean_tmax = mean(tmax, na.rm = T),
+    median_tmax = median(tmax, na.rm = T),
+    sd_tmax = sd(tmax, na.rm = T)
+  ) %>% 
+  ggplot(aes(x = mean_tmax, y = month, color = name)) +
+  geom_point() +
+  geom_line()
+```
+
+Formatting table outputs
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  summarize(
+    n_obs = n(),
+    mean_tmax = mean(tmax, na.rm = T)
+  ) %>% 
+  knitr::kable(digits = 2)
+```
+
+## grouped `mutate`
+
+```{r}
+weather_df %>% 
+  mutate(
+    mean_tmax = mean(tmax, na.rm = T)
+  )
+```
+
+gives mean for all observations
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    mean_tmax = mean(tmax, na.rm = T),
+    centered_tmax = tmax - mean_tmax
+  ) %>% 
+  ggplot(aes(x = date, y = centered_tmax, color = name)) +
+  geom_point()
+```
+
+Gives mean separate for each station (we also made a new centered variable and plotted it)
+
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    tmax_rank = min_rank(tmax)
+  ) %>% 
+  filter(tmax_rank < 2)
+```
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    tmax_rank = min_rank(desc(tmax))
+  ) %>% 
+  filter(tmax_rank < 2)
+```
+
+Lagged variables
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    lagged_tmax = lag(tmax, n = 1),
+    tmax_dif = tmax - lagged_tmax
+  ) 
+```
+
+using summarize to find the sd of `tmax-dif`
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  mutate(
+    lagged_tmax = lag(tmax, n = 1),
+    tmax_dif = tmax - lagged_tmax
+  ) %>% 
+  summarize(dif_sd = sd(tmax_dif, na.rm = T))
+```
+
+
+## Limitations
+
+what if my "summary" is a linear model
+
+```{r}
+weather_df %>% 
+  group_by(name) %>% 
+  summarize(cor_tmin_tmax = cor(tmin, tmax, use = "complete"))
+
+weather_df %>% 
+  filter(name == "CentralPark_NY") %>% 
+  lm(tmax ~ tmin, data = .)
+```
 
